@@ -25,7 +25,7 @@ It is based on the health indicators mentioned above.
 In the default configuration, the liveness probe is comprised of the following health indiactors:
 
 * Gateway Started - checks whether the Gateway is running (i.e. not currently starting and not yet shut down)
-* Gateway Responsive - checks whether the Gateway can handle a request within a given timeout
+* Liveness Gateway Responsive - checks whether the Gateway can handle a request within an ample timeout, but will only report a *DOWN* health status after the underlying health indicator is down for more than 10 minutes
 * Liveness Gateway Cluster Awareness - based on Gateway cluster awareness, but will only report a *DOWN* health status after the underlying health indicator is down for more than 5 minutes
 * Liveness Gateway Partition Leader Awareness - based on Gateway partition leader awareness, but will only report a *DOWN* health status after the underlying health indicator is down for more than 5 minutes
 * Liveness Disk Space - checks that the free disk space is greater than 1 MB
@@ -47,33 +47,34 @@ Settings for started probe:
 ### Liveness Probe
 Settings for liveness probe:
 * `management.endpoint.health.group.liveness.show-details=always` - toggles whether a summary or details (default) of the liveness probe will be returned
-* `management.endpoint.health.group.liveness.include=gatewayStarted,gatewayResponsive,livenessGatewayClusterAwareness,livenessGatewayPartitionLeaderAwareness,livenessDiskSpace,livenessMemory` - defines which health indicators are included in the liveness probe
+* `management.endpoint.health.group.liveness.include=gatewayStarted,livenessGatewayResponsive,livenessGatewayClusterAwareness,livenessGatewayPartitionLeaderAwareness,livenessDiskSpace,livenessMemory` - defines which health indicators are included in the liveness probe
 
 Note that the individual contributing health indicators of the liveness probe can be configured as well (see below).
 
 ### Gateway Started
 Settings for gateway started health indicator:
-* `management.health.gatewayStarted.enabled=true` - enables (default) or disables this health indicator
+* `management.health.gateway-started.enabled=true` - enables (default) or disables this health indicator
 
 ### Gateway Responsive
 
 Settings for gateway repsonsiveness health indicator:
 * `management.health.gateway-responsive.enabled=true` - enables (default) or disables this health indicator
 * `management.health.gateway-responsive.requestTimeout=500ms` - defines the timeout for the request; if the test completes before the timeout, the health status is _UP_, otherwise it is _DOWN_
-
+* `management.health.liveness.gateway-responsive.requestTimeout=5s` - defines the timeout for the request for liveness probe; if the test completes before the timeout
+* `management.health.liveness.gateway-responsive.maxdowntime=10m` - - defines the maximum downtime before the liveness health indicator for responsiveness will flip
 
 ### Gateway Cluster Awareness ###
 
 Settings for gateway cluster awareness health indicator:
-* `management.health.gatewayClusterAwareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
-* `management.health.liveness.gatewayclusterawareness.maxdowntime=PT5M` - defines the maximum downtime before the liveness health indicator for cluster awareness will flip
+* `management.health.gateway-clusterawareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
+* `management.health.liveness.gateway-clusterawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for cluster awareness will flip
 
 
 ### Gateway Partition Leader Awareness ###
 
 Settings for gateway partition leader awareness health indicator:
-* `management.health.gatewayPartitionLeaderAwareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
-* `management.health.liveness.gatewaypartitionleaderawareness.maxdowntime=PT5M` - defines the maximum downtime before the liveness health indicator for partition leader awareness will flip
+* `management.health.gateway-partitionleaderawareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
+* `management.health.liveness.gateway-partitionleaderawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for partition leader awareness will flip
 
 ### Disk Space
 This is arguably the least critical health indicator given that the standalone gateway does not write to disk. The only exception may be the writing of log files, which depend on the log configuration.
