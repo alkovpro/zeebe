@@ -104,7 +104,7 @@ public class ResponsiveHealthIndicatorTest {
   }
 
   @Test
-  public void shouldReportDownStatusIfRequestSucceeds()
+  public void shouldReportUpStatusIfRequestSucceeds()
       throws ExecutionException, InterruptedException {
     // given
     final var mockZeebeClient = mock(ZeebeClient.class);
