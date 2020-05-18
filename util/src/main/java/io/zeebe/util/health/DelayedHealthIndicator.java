@@ -66,16 +66,17 @@ public class DelayedHealthIndicator implements HealthIndicator {
   public Health health() {
     final Builder responseBuilder;
     final long now = System.currentTimeMillis();
-    if (lastTimeUp == null) { // was never up
-      if (lastHealthStatus == null) {
-        responseBuilder = Health.unknown();
+
+    if (lastHealthStatus == null) { // was never checked
+      responseBuilder = Health.unknown();
+    } else {
+      if (lastTimeUp == null) { // was never up
+        responseBuilder = Health.status(lastHealthStatus.getStatus());
+      } else if (lastTimeUp + maxDowntime.toMillis() > now) {
+        responseBuilder = Health.up();
       } else {
         responseBuilder = Health.status(lastHealthStatus.getStatus());
       }
-    } else if (lastTimeUp + maxDowntime.toMillis() > now) {
-      responseBuilder = Health.up();
-    } else {
-      responseBuilder = Health.status(lastHealthStatus.getStatus());
     }
 
     return responseBuilder.withDetails(createDetails(now)).build();
@@ -90,7 +91,9 @@ public class DelayedHealthIndicator implements HealthIndicator {
 
     result.put("wasEverUp", lastTimeUp != null);
 
-    if (lastTimeUp != null && lastHealthStatus.getStatus() != Status.UP) {
+    if (lastTimeUp != null
+        && lastHealthStatus != null
+        && lastHealthStatus.getStatus() != Status.UP) {
       result.put("downTime", Duration.ofMillis(referenceTime - lastTimeUp));
     }
 
