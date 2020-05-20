@@ -60,21 +60,21 @@ Settings for gateway started health indicator:
 Settings for gateway repsonsiveness health indicator:
 * `management.health.gateway-responsive.enabled=true` - enables (default) or disables this health indicator
 * `management.health.gateway-responsive.requestTimeout=500ms` - defines the timeout for the request; if the test completes before the timeout, the health status is _UP_, otherwise it is _DOWN_
-* `management.health.liveness.gateway-responsive.requestTimeout=5s` - defines the timeout for the request for liveness probe; if the test completes before the timeout
+* `management.health.liveness.gateway-responsive.requestTimeout=5s` - defines the timeout for the request for liveness probe; if the request completes before the timeout, the health status is _UP_
 * `management.health.liveness.gateway-responsive.maxdowntime=10m` - - defines the maximum downtime before the liveness health indicator for responsiveness will flip
 
 ### Gateway Cluster Awareness ###
 
 Settings for gateway cluster awareness health indicator:
 * `management.health.gateway-clusterawareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
-* `management.health.liveness.gateway-clusterawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for cluster awareness will flip
+* `management.health.liveness.gateway-clusterawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for cluster awareness will flip. In other words: this health indicator will report _DOWN_ after the gateway was unaware of other members in the cluster for more than 5 minutes
 
 
 ### Gateway Partition Leader Awareness ###
 
 Settings for gateway partition leader awareness health indicator:
 * `management.health.gateway-partitionleaderawareness.enabled=true` - enables (default) or disables this health indicator (and its liveness counterpart)
-* `management.health.liveness.gateway-partitionleaderawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for partition leader awareness will flip
+* `management.health.liveness.gateway-partitionleaderawareness.maxdowntime=5m` - defines the maximum downtime before the liveness health indicator for partition leader awareness will flip. In other words: this health indicator will report _DOWN_ after the gateway was unaware of partition leaders for more than 5 minutes
 
 ### Disk Space
 This is arguably the least critical health indicator given that the standalone gateway does not write to disk. The only exception may be the writing of log files, which depend on the log configuration.

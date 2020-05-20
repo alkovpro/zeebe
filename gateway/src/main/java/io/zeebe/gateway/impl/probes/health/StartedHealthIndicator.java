@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 import io.zeebe.gateway.Gateway.Status;
 import io.zeebe.gateway.Loggers;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.slf4j.Logger;
 import org.springframework.boot.actuate.health.Health;
@@ -24,19 +25,20 @@ public class StartedHealthIndicator implements HealthIndicator {
 
   public static final Logger LOG = Loggers.GATEWAY_LOGGER;
 
-  private final Supplier<Status> gatewayStatusSupplier;
+  private final Supplier<Optional<Status>> gatewayStatusSupplier;
 
-  public StartedHealthIndicator(final Supplier<Status> gatewayStatusSupplier) {
+  public StartedHealthIndicator(final Supplier<Optional<Status>> gatewayStatusSupplier) {
     this.gatewayStatusSupplier = requireNonNull(gatewayStatusSupplier);
   }
 
   @Override
   public Health health() {
-    final Status status = gatewayStatusSupplier.get();
+    final Optional<Status> optStatus = gatewayStatusSupplier.get();
 
-    if (status == null) {
+    if (optStatus.isEmpty()) {
       return Health.unknown().build();
     } else {
+      final var status = optStatus.get();
       switch (status) {
         case INITIAL:
         case STARTING:

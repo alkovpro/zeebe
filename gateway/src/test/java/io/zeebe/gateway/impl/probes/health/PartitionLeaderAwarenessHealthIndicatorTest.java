@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import io.zeebe.gateway.impl.broker.cluster.BrokerClusterState;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.junit.Test;
 import org.springframework.boot.actuate.health.Status;
@@ -29,9 +30,9 @@ public class PartitionLeaderAwarenessHealthIndicatorTest {
   }
 
   @Test
-  public void shouldReportDownIfSupplierReturnsNull() {
+  public void shouldReportDownIfSupplierReturnsEmpty() {
     // given
-    final Supplier<BrokerClusterState> stateSupplier = () -> null;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier = () -> Optional.empty();
     final var sutHealthIndicator = new PartitionLeaderAwarenessHealthIndicator(stateSupplier);
 
     // when
@@ -50,7 +51,8 @@ public class PartitionLeaderAwarenessHealthIndicatorTest {
     when(mockClusterState.getLeaderForPartition(1)).thenReturn(BrokerClusterState.NODE_ID_NULL);
     when(mockClusterState.getLeaderForPartition(2)).thenReturn(42);
 
-    final Supplier<BrokerClusterState> stateSupplier = () -> mockClusterState;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier =
+        () -> Optional.of(mockClusterState);
     final var sutHealthIndicator = new PartitionLeaderAwarenessHealthIndicator(stateSupplier);
 
     // when
@@ -67,7 +69,8 @@ public class PartitionLeaderAwarenessHealthIndicatorTest {
     final BrokerClusterState mockClusterState = mock(BrokerClusterState.class);
     when(mockClusterState.getPartitions()).thenReturn(emptyList());
 
-    final Supplier<BrokerClusterState> stateSupplier = () -> mockClusterState;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier =
+        () -> Optional.of(mockClusterState);
     final var sutHealthIndicator = new PartitionLeaderAwarenessHealthIndicator(stateSupplier);
 
     // when
@@ -86,7 +89,8 @@ public class PartitionLeaderAwarenessHealthIndicatorTest {
     when(mockClusterState.getLeaderForPartition(1)).thenReturn(BrokerClusterState.NODE_ID_NULL);
     when(mockClusterState.getLeaderForPartition(2)).thenReturn(BrokerClusterState.NODE_ID_NULL);
 
-    final Supplier<BrokerClusterState> stateSupplier = () -> mockClusterState;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier =
+        () -> Optional.of(mockClusterState);
     final var sutHealthIndicator = new PartitionLeaderAwarenessHealthIndicator(stateSupplier);
 
     // when

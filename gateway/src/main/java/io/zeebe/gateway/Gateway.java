@@ -42,7 +42,7 @@ public final class Gateway {
 
   private Server server;
   private BrokerClient brokerClient;
-  private Status status = Status.INITIAL;
+  private volatile Status status = Status.INITIAL;
 
   public Gateway(
       final GatewayCfg gatewayCfg,

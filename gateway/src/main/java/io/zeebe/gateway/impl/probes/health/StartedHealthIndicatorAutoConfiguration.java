@@ -24,16 +24,7 @@ public class StartedHealthIndicatorAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean(name = "gatewayStartedHealthIndicator")
   public StartedHealthIndicator gatewayStartedHealthIndicator(SpringGatewayBridge gatewayBridge) {
-    /**
-     * Here we effectively chain two suppliers to decouple their creation in time.
-     *
-     * <p>The first supplier created here and passed into the constructor of the health indicator is
-     * created first. This happens very early in the application's life cycle. At this point in
-     * time, the gateway status supplier inside gateway bridge is not yet registered.
-     *
-     * <p>Later, the actual gateway status supplier will be registered at gatewayBridge. The
-     * chaining allows us to delegate over two hops.
-     */
+    // Here we effectively chain two suppliers to decouple their creation in time.
     return new StartedHealthIndicator(gatewayBridge::getGatewayStatus);
   }
 }

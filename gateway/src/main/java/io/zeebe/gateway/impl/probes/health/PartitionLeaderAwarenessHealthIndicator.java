@@ -10,6 +10,7 @@ package io.zeebe.gateway.impl.probes.health;
 import static java.util.Objects.requireNonNull;
 
 import io.zeebe.gateway.impl.broker.cluster.BrokerClusterState;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -20,20 +21,21 @@ import org.springframework.boot.actuate.health.HealthIndicator;
  */
 public class PartitionLeaderAwarenessHealthIndicator implements HealthIndicator {
 
-  private final Supplier<BrokerClusterState> clusterStateSupplier;
+  private final Supplier<Optional<BrokerClusterState>> clusterStateSupplier;
 
   public PartitionLeaderAwarenessHealthIndicator(
-      final Supplier<BrokerClusterState> clusterStateSupplier) {
+      final Supplier<Optional<BrokerClusterState>> clusterStateSupplier) {
     this.clusterStateSupplier = requireNonNull(clusterStateSupplier);
   }
 
   @Override
   public Health health() {
-    final var clusterState = clusterStateSupplier.get();
+    final var optClusterState = clusterStateSupplier.get();
 
-    if (clusterState == null) {
+    if (optClusterState.isEmpty()) {
       return Health.down().build();
     } else {
+      final var clusterState = optClusterState.get();
       if (clusterState.getPartitions().stream()
           .filter(
               index -> {

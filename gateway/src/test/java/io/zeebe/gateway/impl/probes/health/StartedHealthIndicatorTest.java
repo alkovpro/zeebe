@@ -11,6 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.zeebe.gateway.Gateway.Status;
+import java.util.Optional;
 import org.junit.Test;
 import org.springframework.boot.actuate.health.Health;
 
@@ -23,9 +24,10 @@ public class StartedHealthIndicatorTest {
   }
 
   @Test
-  public void shouldReportUnknownWhenGatewayStateIsNull() {
+  public void shouldReportUnknownWhenGatewayStateIsEmpty() {
     // given
-    final StartedHealthIndicator sutHealthIndicator = new StartedHealthIndicator(() -> null);
+    final StartedHealthIndicator sutHealthIndicator =
+        new StartedHealthIndicator(() -> Optional.empty());
 
     // when
     final Health actual = sutHealthIndicator.health();
@@ -38,7 +40,7 @@ public class StartedHealthIndicatorTest {
   public void shouldReportDownWhenGatewayStateIsInitial() {
     // given
     final StartedHealthIndicator sutHealthIndicator =
-        new StartedHealthIndicator(() -> Status.INITIAL);
+        new StartedHealthIndicator(() -> Optional.of(Status.INITIAL));
 
     // when
     final Health actual = sutHealthIndicator.health();
@@ -51,7 +53,7 @@ public class StartedHealthIndicatorTest {
   public void shouldReportDownWhenGatewayStateIsStarting() {
     // given
     final StartedHealthIndicator sutHealthIndicator =
-        new StartedHealthIndicator(() -> Status.STARTING);
+        new StartedHealthIndicator(() -> Optional.of(Status.STARTING));
 
     // when
     final Health actual = sutHealthIndicator.health();
@@ -64,7 +66,7 @@ public class StartedHealthIndicatorTest {
   public void shouldReportUpWhenGatewayStateIsRunning() {
     // given
     final StartedHealthIndicator sutHealthIndicator =
-        new StartedHealthIndicator(() -> Status.RUNNING);
+        new StartedHealthIndicator(() -> Optional.of(Status.RUNNING));
 
     // when
     final Health actual = sutHealthIndicator.health();
@@ -77,7 +79,7 @@ public class StartedHealthIndicatorTest {
   public void shouldReportOutOfServiceWhenGatewayStateIsShutdown() {
     // given
     final StartedHealthIndicator sutHealthIndicator =
-        new StartedHealthIndicator(() -> Status.SHUTDOWN);
+        new StartedHealthIndicator(() -> Optional.of(Status.SHUTDOWN));
 
     // when
     final Health actual = sutHealthIndicator.health();

@@ -21,7 +21,7 @@ import org.springframework.boot.actuate.health.Status;
 @RunWith(MockitoJUnitRunner.class)
 public class DelayedHealthIndicatorTest {
 
-  private static final Duration TEST_MAX_DOWNTIME = Duration.ofMillis(50);
+  private static final Duration TEST_MAX_DOWNTIME = Duration.ofMillis(10);
 
   @Mock private HealthIndicator mockHealthIndicator;
 
@@ -118,7 +118,7 @@ public class DelayedHealthIndicatorTest {
     final Health actualHealthImmediate = sutDelayedHealthIndicator.health();
 
     // wait for more then the configured max downtime
-    Thread.sleep(100);
+    Thread.sleep(20);
     sutDelayedHealthIndicator.checkHealth();
     final Health actualHealthAfterDelay = sutDelayedHealthIndicator.health();
 
@@ -154,7 +154,7 @@ public class DelayedHealthIndicatorTest {
     sutDelayedHealthIndicator.checkHealth();
 
     // wait for more then the configured max downtime
-    Thread.sleep(100);
+    Thread.sleep(20);
 
     final Health actualHealthAfterDelay = sutDelayedHealthIndicator.health();
 

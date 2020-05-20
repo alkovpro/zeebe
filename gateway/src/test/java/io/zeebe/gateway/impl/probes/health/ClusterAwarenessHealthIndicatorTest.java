@@ -15,6 +15,7 @@ import static org.mockito.Mockito.when;
 
 import io.zeebe.gateway.impl.broker.cluster.BrokerClusterState;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.junit.Test;
 import org.springframework.boot.actuate.health.Status;
@@ -29,9 +30,9 @@ public class ClusterAwarenessHealthIndicatorTest {
   }
 
   @Test
-  public void shouldReportDownIfSupplierReturnsNull() {
+  public void shouldReportDownIfSupplierReturnsEmpty() {
     // given
-    final Supplier<BrokerClusterState> stateSupplier = () -> null;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier = () -> Optional.empty();
     final var sutHealthIndicator = new ClusterAwarenessHealthIndicator(stateSupplier);
 
     // when
@@ -48,7 +49,8 @@ public class ClusterAwarenessHealthIndicatorTest {
     final BrokerClusterState mockClusterState = mock(BrokerClusterState.class);
     when(mockClusterState.getBrokers()).thenReturn(List.of(1));
 
-    final Supplier<BrokerClusterState> stateSupplier = () -> mockClusterState;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier =
+        () -> Optional.of(mockClusterState);
     final var sutHealthIndicator = new ClusterAwarenessHealthIndicator(stateSupplier);
 
     // when
@@ -65,7 +67,8 @@ public class ClusterAwarenessHealthIndicatorTest {
     final BrokerClusterState mockClusterState = mock(BrokerClusterState.class);
     when(mockClusterState.getBrokers()).thenReturn(emptyList());
 
-    final Supplier<BrokerClusterState> stateSupplier = () -> mockClusterState;
+    final Supplier<Optional<BrokerClusterState>> stateSupplier =
+        () -> Optional.of(mockClusterState);
     final var sutHealthIndicator = new ClusterAwarenessHealthIndicator(stateSupplier);
 
     // when
