@@ -118,7 +118,7 @@ public class DelayedHealthIndicatorTest {
     final Health actualHealthImmediate = sutDelayedHealthIndicator.health();
 
     // wait for more then the configured max downtime
-    Thread.sleep(20);
+    Thread.sleep(30);
     sutDelayedHealthIndicator.checkHealth();
     final Health actualHealthAfterDelay = sutDelayedHealthIndicator.health();
 
@@ -154,7 +154,7 @@ public class DelayedHealthIndicatorTest {
     sutDelayedHealthIndicator.checkHealth();
 
     // wait for more then the configured max downtime
-    Thread.sleep(20);
+    Thread.sleep(30);
 
     final Health actualHealthAfterDelay = sutDelayedHealthIndicator.health();
 
