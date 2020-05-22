@@ -16,6 +16,11 @@ public class FlakyTest {
   Random random = new Random();
 
   @Test
+  public void shouldAlwaysFail() {
+    Assert.fail("Fail as intended");
+  }
+
+  @Test
   public void shouldFailNineInTenInvocations() {
     if (random.nextDouble() < 0.9) {
       Assert.fail("failed");
