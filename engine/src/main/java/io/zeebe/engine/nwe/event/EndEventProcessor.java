@@ -47,6 +47,10 @@ public final class EndEventProcessor implements BpmnElementProcessor<ExecutableE
 
   @Override
   public void onActivated(final ExecutableEndEvent element, final BpmnElementContext context) {
+    if (!element.hasError()) {
+      return;
+    }
+
     final var error = element.getError();
     ensureNotNull("error", error);
 
